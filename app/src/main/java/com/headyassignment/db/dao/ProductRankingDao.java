@@ -16,17 +16,11 @@ public interface ProductRankingDao {
     @Query("SELECT * FROM product_rankings group by ranking")
     List<ProductRanking> loadAllProductRankingGroupBy();
 
-    @Query("SELECT * FROM product_rankings where product_id = :id")
-    LiveData<List<ProductRanking>> loadAllProductRankingByProductId(long id);
-
-    @Query("SELECT * FROM product_rankings where ranking = :ranking")
+    @Query("SELECT * FROM product_rankings where ranking = :ranking order by count DESC")
     LiveData<List<ProductRanking>> loadAllProductRankingByRanking(String ranking);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<ProductRanking> productRankings);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(ProductRanking productRanking);
 
     @Query("DELETE FROM product_rankings")
     void deleteModel();

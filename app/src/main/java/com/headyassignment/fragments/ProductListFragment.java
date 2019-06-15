@@ -3,10 +3,11 @@ package com.headyassignment.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +15,10 @@ import android.view.ViewGroup;
 
 import com.headyassignment.R;
 import com.headyassignment.activities.MainActivity;
+import com.headyassignment.activities.ProductDetailActivity;
 import com.headyassignment.adapter.ProductAdapter;
-import com.headyassignment.db.entity.Product;
-import com.headyassignment.viewmodel.ProductListViewModel;
+import com.headyassignment.db.entity.ProductVariantPOJO;
+import com.headyassignment.viewmodel.VariantViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +37,8 @@ public class ProductListFragment extends Fragment {
     @BindView(R.id.fragProdList_recyclerView)
     RecyclerView recyclerView;
 
-    List<Product> globalProducts;
+    List<ProductVariantPOJO> globalProducts;
     ProductAdapter productAdapter;
-
     long id;
     String name = "";
 
@@ -75,18 +76,28 @@ public class ProductListFragment extends Fragment {
         globalProducts = new ArrayList<>();
         productAdapter = new ProductAdapter(getActivity(), globalProducts);
         recyclerView.setAdapter(productAdapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        final ProductListViewModel viewModel =
-                ViewModelProviders.of(this).get(ProductListViewModel.class);
+        final VariantViewModel viewModel =
+                ViewModelProviders.of(this).get(VariantViewModel.class);
         subscribeUi(viewModel);
+
+        productAdapter.setmOnItemClickListener(new ProductAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(ProductVariantPOJO obj, int position) {
+                Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
+                intent.putExtra(ProductDetailActivity.EXTRA_ID, obj.getId());
+                intent.putExtra(ProductDetailActivity.EXTRA_NAME, obj.getName());
+                startActivity(intent);
+            }
+        });
     }
 
-    private void subscribeUi(ProductListViewModel viewModel) {
+    private void subscribeUi(VariantViewModel viewModel) {
         // Update the list when the data changes
-        viewModel.getProducts(id).observe(this, new Observer<List<Product>>() {
+        viewModel.getProductByCategoryId(id).observe(this, new Observer<List<ProductVariantPOJO>>() {
             @Override
-            public void onChanged(@Nullable List<Product> products) {
+            public void onChanged(@Nullable List<ProductVariantPOJO> products) {
                 if (products != null) {
                     globalProducts.clear();
                     globalProducts.addAll(products);

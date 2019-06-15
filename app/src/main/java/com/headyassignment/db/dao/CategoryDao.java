@@ -7,7 +7,6 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import com.headyassignment.db.entity.Category;
-import com.headyassignment.db.entity.Product;
 
 import java.util.List;
 
@@ -19,7 +18,4 @@ public interface CategoryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Category> categories);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Category category);
 }

@@ -16,9 +16,6 @@ import java.util.List;
 
 public class VariantAdapter extends RecyclerView.Adapter<VariantAdapter.VariantViewHolder> {
 
-    public static final int TYPE_COLOR = 1;
-    public static final int TYPE_SIZE = 2;
-
     Context context;
     List<ProductDetailActivity.Variant> variants;
     private OnItemClickListener mOnItemClickListener;
@@ -43,17 +40,21 @@ public class VariantAdapter extends RecyclerView.Adapter<VariantAdapter.VariantV
     @Override
     public void onBindViewHolder(@NonNull VariantViewHolder holder, int i) {
         ProductDetailActivity.Variant variant = variants.get(i);
-        if (variant.getType() == ProductDetailActivity.Variant.TYPE_COLOR) {
-            holder.txtTitle.setText(variant.getColor());
-        } else {
-            holder.txtTitle.setText(variant.getSize());
-        }
+        holder.txtColor.setText(variant.getColor());
+        holder.txtSize.setText(variant.getSize());
 
         if (variant.isSelected()) {
             holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.viewBgLine));
         } else {
             holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.app_white));
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnItemClickListener.onItemClick(variant, i);
+            }
+        });
     }
 
     @Override
@@ -63,13 +64,15 @@ public class VariantAdapter extends RecyclerView.Adapter<VariantAdapter.VariantV
 
     public class VariantViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtTitle;
+        TextView txtSize;
+        TextView txtColor;
         CardView cardView;
 
         public VariantViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            txtTitle = itemView.findViewById(R.id.itemVariant_txtTitle);
+            txtSize = itemView.findViewById(R.id.itemVariant_txtSize);
+            txtColor = itemView.findViewById(R.id.itemVariant_txtColor);
             cardView = itemView.findViewById(R.id.itemVariant_card);
         }
     }

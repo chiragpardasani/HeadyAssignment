@@ -7,12 +7,64 @@
     android:orientation="vertical"
     tools:context=".activities.ProductDetailActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <TextView
+        android:id="@+id/actProdDetail_txtTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="22sp"
+        tools:text="Product Name" />
+
+    <TextView
+        android:id="@+id/actProdDetail_txtPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:textSize="18sp"
+        tools:text="Price" />
+
+    <TextView
+        android:id="@+id/actProdDetail_txtTax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="14sp"
+        tools:text="Tax" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Available in: "
+        android:textColor="@color/textColorSecondary"
+        android:textSize="14sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/actProdDetail_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp" />
 
     <TextView
         android:id="@+id/actProdDetail_txtCreatedOn"
@@ -21,27 +73,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="8dp"
-        android:textSize="18sp"
+        android:textSize="12sp"
         tools:text="Created On: " />
 
-    <TextView
-        android:id="@+id/actProdDetail_txtTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:textSize="18sp"
-        tools:text="Product Name" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/actProdDetail_recyclerViewSizes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/actProdDetail_recyclerViewColors"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp" />
 
 </LinearLayout>

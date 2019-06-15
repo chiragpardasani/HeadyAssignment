@@ -25,13 +25,21 @@ import com.headyassignment.viewmodel.CategoryViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    @BindView(R.id.nav_view)
     NavigationView navigationView;
+
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     List<Category> globalCategories;
 
     @Override
@@ -40,33 +48,24 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        globalCategories = new ArrayList<>();
         navigationView.setNavigationItemSelectedListener(this);
 
         replaceFragment(HomeFragment.newInstance(), false);
-
-        globalCategories = new ArrayList<>();
-
-        CategoryViewModel.Factory factory = new CategoryViewModel.Factory(
-                getApplication(), 0); // Zero because we have to get category with zero children
         final CategoryViewModel viewModel =
-                ViewModelProviders.of(this, factory).get(CategoryViewModel.class);
-
+                ViewModelProviders.of(this).get(CategoryViewModel.class);
         subscribeUi(viewModel);
     }
 
     private void subscribeUi(CategoryViewModel viewModel) {
         // Update the list when the data changes
-        viewModel.getCategories().observe(this, new Observer<List<Category>>() {
+        viewModel.getCategories(0).observe(this, new Observer<List<Category>>() {
             @Override
             public void onChanged(@Nullable List<Category> categories) {
                 if (categories != null) {
@@ -90,7 +89,6 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

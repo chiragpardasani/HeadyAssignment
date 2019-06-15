@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.headyassignment.R;
-import com.headyassignment.db.entity.Product;
+import com.headyassignment.db.entity.ProductVariantPOJO;
 import com.headyassignment.utils.AppUtils;
 
 import java.util.Date;
@@ -18,10 +18,10 @@ import java.util.List;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
     Context context;
-    List<Product> products;
+    List<ProductVariantPOJO> products;
     private OnItemClickListener mOnItemClickListener;
 
-    public ProductAdapter(Context context, List<Product> products) {
+    public ProductAdapter(Context context, List<ProductVariantPOJO> products) {
         this.context = context;
         this.products = products;
     }
@@ -40,10 +40,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int i) {
-        Product product = products.get(i);
+        ProductVariantPOJO product = products.get(i);
         Date date = AppUtils.parseStringDate(product.getDate_added(), AppUtils.TEMPLATE_STANDARD_DATE_AND_TIME_TIMEZONE_MILLI);
-        holder.txtDate.setText("Created on :" + AppUtils.getStandardDate(date, "dd MMM yyyy"));
+        holder.txtDate.setText("Created on : " + AppUtils.getStandardDate(date, "dd MMM yyyy"));
         holder.txtTitle.setText(product.getName());
+        holder.txtPrice.setText("Rs : " + product.getPrice());
+        holder.txtAvailableIn.setText("Size: " + product.getSize() + ", Color: " + product.getColor());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnItemClickListener.onItemClick(product, i);
+            }
+        });
     }
 
     @Override
@@ -55,18 +63,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         TextView txtDate;
         TextView txtTitle;
-        TextView txtSummary;
+        TextView txtPrice;
+        TextView txtAvailableIn;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
 
             txtDate = itemView.findViewById(R.id.itemProduct_txtDate);
             txtTitle = itemView.findViewById(R.id.itemProduct_txtTitle);
-            txtSummary = itemView.findViewById(R.id.itemProduct_txtSummary);
+            txtPrice = itemView.findViewById(R.id.itemProduct_txtPrice);
+            txtAvailableIn = itemView.findViewById(R.id.itemProduct_txtAvailableIn);
         }
     }
 
     public interface OnItemClickListener {
-        void onItemClick(Product obj, int position);
+        void onItemClick(ProductVariantPOJO obj, int position);
     }
 }

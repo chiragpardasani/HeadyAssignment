@@ -6,6 +6,8 @@ import android.arch.lifecycle.MediatorLiveData;
 import com.headyassignment.db.entity.Category;
 import com.headyassignment.db.entity.Product;
 import com.headyassignment.db.entity.ProductRanking;
+import com.headyassignment.db.entity.ProductVariantPOJO;
+import com.headyassignment.db.entity.Variant;
 
 import java.util.List;
 
@@ -27,11 +29,6 @@ public class DataRepository {
 
         mObservableProducts = new MediatorLiveData<>();
         mObservableCategories = new MediatorLiveData<>();
-
-        mObservableProducts.addSource(mDatabase.productDao().loadAllProducts(),
-                productEntities -> {
-                    mObservableProducts.postValue(productEntities);
-                });
     }
 
     public static DataRepository getInstance(final AppDatabase database) {
@@ -52,8 +49,8 @@ public class DataRepository {
         return mDatabase.productDao().loadAllProducts();
     }
 
-    public LiveData<List<Product>> getProductsByIds(List<Long> longs) {
-        return mDatabase.productDao().loadAllProductsByIds(longs);
+    public LiveData<Product> getSingleProduct(long id) {
+        return mDatabase.productDao().getSingleProduct(id);
     }
 
     public LiveData<List<Product>> getProductsByCategoryId(long id) {
@@ -66,5 +63,21 @@ public class DataRepository {
 
     public LiveData<List<ProductRanking>> getRankingWithCount(String ranking) {
         return mDatabase.productRankingDao().loadAllProductRankingByRanking(ranking);
+    }
+
+    public LiveData<List<Variant>> getVariantByProduct(long id) {
+        return mDatabase.variantDao().loadAllVariantsByProduct(id);
+    }
+
+    public LiveData<List<ProductVariantPOJO>> getVariantWithProducts(List<Long> longs) {
+        return mDatabase.variantDao().loadAllVariantsWithProduct(longs);
+    }
+
+    public LiveData<List<ProductVariantPOJO>> getVariantForCategory(long id) {
+        return mDatabase.variantDao().loadAllVariantsByCategory(id);
+    }
+
+    public LiveData<List<ProductVariantPOJO>> getVariantWithProducts() {
+        return mDatabase.variantDao().loadAllVariantsWithProduct();
     }
 }

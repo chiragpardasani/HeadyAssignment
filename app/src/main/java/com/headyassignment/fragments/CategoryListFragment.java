@@ -93,7 +93,7 @@ public class CategoryListFragment extends Fragment {
 
     private void subscribeUi(CategoryViewModel viewModel) {
         // Update the list when the data changes
-        viewModel.getCategories().observe(this, new Observer<List<Category>>() {
+        viewModel.getCategories(id).observe(this, new Observer<List<Category>>() {
             @Override
             public void onChanged(@Nullable List<Category> categories) {
                 if (categories != null) {
@@ -126,6 +126,21 @@ public class CategoryListFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        selectedParent_id = 0;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).setTitle("Categories");
+        viewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
+        viewModel.setID(id);
+        subscribeUi(viewModel);
     }
 
     public static class LocalCategory {
@@ -175,17 +190,5 @@ public class CategoryListFragment extends Fragment {
         }
 
         return null;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((MainActivity) getActivity()).setTitle("Categories");
-        CategoryViewModel.Factory factory = new CategoryViewModel.Factory(
-                getActivity().getApplication(), id);
-        viewModel = ViewModelProviders.of(this, factory).get(CategoryViewModel.class);
-        selectedParent_id = 0;
-        viewModel.setID(id);
-        subscribeUi(viewModel);
     }
 }

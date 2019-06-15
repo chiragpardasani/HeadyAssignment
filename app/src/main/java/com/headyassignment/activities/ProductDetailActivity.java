@@ -1,7 +1,11 @@
 package com.headyassignment.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -9,7 +13,13 @@ import android.widget.TextView;
 
 import com.headyassignment.R;
 import com.headyassignment.adapter.VariantAdapter;
+import com.headyassignment.db.entity.Product;
+import com.headyassignment.utils.AppUtils;
+import com.headyassignment.viewmodel.ProductViewModel;
+import com.headyassignment.viewmodel.VariantViewModel;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,17 +39,18 @@ public class ProductDetailActivity extends AppCompatActivity {
     @BindView(R.id.actProdDetail_txtCreatedOn)
     TextView txtCreatedOn;
 
-    @BindView(R.id.actProdDetail_recyclerViewColors)
-    RecyclerView recyclerViewColors;
+    @BindView(R.id.actProdDetail_txtPrice)
+    TextView txtPrice;
 
-    @BindView(R.id.actProdDetail_recyclerViewSizes)
-    RecyclerView recyclerViewSizes;
+    @BindView(R.id.actProdDetail_txtTax)
+    TextView txtTax;
 
-    List<Variant> variantSizes;
-    List<Variant> variantColors;
+    @BindView(R.id.actProdDetail_recyclerView)
+    RecyclerView recyclerView;
 
-    VariantAdapter variantAdapterSizes;
-    VariantAdapter variantAdapterColors;
+    List<Variant> globalVariants;
+
+    VariantAdapter variantAdapter;
 
     long id;
     String name;
@@ -57,26 +68,97 @@ public class ProductDetailActivity extends AppCompatActivity {
         id = getIntent().getLongExtra(EXTRA_ID, 0);
         name = getIntent().getStringExtra(EXTRA_NAME);
 
+        globalVariants = new ArrayList<>();
+
+        variantAdapter = new VariantAdapter(this, globalVariants);
+
+        recyclerView.setAdapter(variantAdapter);
+        recyclerView.setLayoutManager((new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)));
+
         txtTitle.setText(name);
+
+        variantAdapter.setmOnItemClickListener(new VariantAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Variant obj, int type) {
+                for (Variant variant : globalVariants) {
+                    if (variant.getId() == obj.getId()) {
+                        variant.setSelected(true);
+                        txtPrice.setText("Rs " + variant.getPrice());
+                    } else {
+                        variant.setSelected(false);
+                    }
+                }
+
+                variantAdapter.notifyDataSetChanged();
+            }
+        });
+
+        final VariantViewModel viewModel =
+                ViewModelProviders.of(this).get(VariantViewModel.class);
+        subscribe(viewModel);
+
+        final ProductViewModel productViewModel =
+                ViewModelProviders.of(this).get(ProductViewModel.class);
+        subscribe(productViewModel);
+    }
+
+    private void subscribe(VariantViewModel viewModel) {
+        viewModel.getRankingWithCount(id).observe(this, new Observer<List<com.headyassignment.db.entity.Variant>>() {
+            @Override
+            public void onChanged(@Nullable List<com.headyassignment.db.entity.Variant> variants) {
+                if (variants != null) {
+                    globalVariants.clear();
+                    globalVariants.clear();
+                    int i = 1;
+                    for (com.headyassignment.db.entity.Variant variant : variants) {
+                        Variant variantColor = new Variant();
+                        variantColor.setId(variant.getId());
+                        variantColor.setColor(variant.getColor());
+                        variantColor.setSize(variant.getSize());
+                        variantColor.setPrice(variant.getPrice());
+                        if (i == 1) {
+                            variantColor.setSelected(true);
+                            txtPrice.setText("Rs " + variant.getPrice());
+                        } else {
+                            variantColor.setSelected(false);
+                        }
+                        i++;
+                        globalVariants.add(variantColor);
+                    }
+
+                    variantAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
+    public void subscribe(ProductViewModel productViewModel) {
+        productViewModel.getSingleProduct(id).observe(this, new Observer<Product>() {
+            @Override
+            public void onChanged(@Nullable Product product) {
+                if (product != null) {
+                    txtTax.setText(" + " + product.getTax().getValue() + "% " + product.getTax().getName());
+
+                    Date date = AppUtils.parseStringDate(product.getDate_added(), AppUtils.TEMPLATE_STANDARD_DATE_AND_TIME_TIMEZONE_MILLI);
+                    txtCreatedOn.setText("Created on : " + AppUtils.getStandardDate(date, "dd MMM yyyy"));
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home)
+            onBackPressed();
+        return super.onOptionsItemSelected(item);
     }
 
     public class Variant {
-        public static final int TYPE_SIZE = 1;
-        public static final int TYPE_COLOR = 2;
-
-        int type;
+        long id;
         String color;
         String size;
         String price;
         boolean isSelected;
-
-        public int getType() {
-            return type;
-        }
-
-        public void setType(int type) {
-            this.type = type;
-        }
 
         public String getColor() {
             return color;
@@ -109,12 +191,13 @@ public class ProductDetailActivity extends AppCompatActivity {
         public void setSelected(boolean selected) {
             isSelected = selected;
         }
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home)
-            onBackPressed();
-        return super.onOptionsItemSelected(item);
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
     }
 }

@@ -16,6 +16,9 @@ public interface ProductDao {
     @Query("SELECT * FROM products")
     LiveData<List<Product>> loadAllProducts();
 
+    @Query("SELECT * FROM products where id = :id")
+    LiveData<Product> getSingleProduct(long id);
+
     @Query("SELECT * FROM products where id IN (:longs)")
     LiveData<List<Product>> loadAllProductsByIds(List<Long> longs);
 
@@ -24,7 +27,4 @@ public interface ProductDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Product> products);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Product product);
 }

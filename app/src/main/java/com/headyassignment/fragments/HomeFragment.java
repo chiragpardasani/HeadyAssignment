@@ -3,31 +3,32 @@ package com.headyassignment.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.headyassignment.MyApplication;
 import com.headyassignment.R;
 import com.headyassignment.activities.MainActivity;
+import com.headyassignment.activities.ProductDetailActivity;
 import com.headyassignment.adapter.ProductAdapter;
 import com.headyassignment.api.APIHelper;
-import com.headyassignment.db.entity.Product;
 import com.headyassignment.db.entity.ProductRanking;
+import com.headyassignment.db.entity.ProductVariantPOJO;
 import com.headyassignment.utils.DataProcessor;
 import com.headyassignment.utils.Response;
-import com.headyassignment.viewmodel.ProductViewModel;
 import com.headyassignment.viewmodel.RankingViewModel;
+import com.headyassignment.viewmodel.VariantViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,24 +42,21 @@ import okhttp3.ResponseBody;
  */
 public class HomeFragment extends Fragment {
 
-    public static final String TYPE_VIEW_ALL = "View All";
+    public static final String TYPE_VIEW_ALL = "All Prodcuts";
 
     @BindView(R.id.fragHome_recyclerView)
     RecyclerView recyclerView;
 
-    @BindView(R.id.fragHome_edtSearch)
-    EditText edtSearch;
-
     @BindView(R.id.fragHome_spinner)
     Spinner spinner;
 
-    List<Product> globalProducts;
+    List<ProductVariantPOJO> globalProducts;
     List<ProductRanking> globalProductRankings;
     ProductAdapter productAdapter;
 
     APIHelper apiHelper;
     RankingViewModel viewModelRanking;
-    ProductViewModel viewModel;
+    VariantViewModel variantViewModel;
 
     List<Long> longs;
 
@@ -91,31 +89,20 @@ public class HomeFragment extends Fragment {
         productAdapter = new ProductAdapter(getActivity(), globalProducts);
 
         recyclerView.setAdapter(productAdapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         spinner.setAdapter(createTypeAdapter());
-        viewModel =
-                ViewModelProviders.of(this).get(ProductViewModel.class);
-        subscribeUi(viewModel);
-
         viewModelRanking =
                 ViewModelProviders.of(this).get(RankingViewModel.class);
-        subscribeUiForIds();
-        apiHelper.getJson(new APIHelper.ICallback() {
-            @Override
-            public void onSuccess(Response body) {
-                if (body != null) {
-                    DataProcessor dataProcessor = new DataProcessor(getActivity());
-                    dataProcessor.processData(body);
-                }
-            }
 
-            @Override
-            public void onFailure(ResponseBody responseBody) {
+        variantViewModel =
+                ViewModelProviders.of(this).get(VariantViewModel.class);
+        subscribeForVariant();
 
-            }
-        });
+        // Server call for fetching gson
+        serverCallForGson();
 
+        // Get categories by database
         new GetGroupByCategories().execute();
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -124,6 +111,8 @@ public class HomeFragment extends Fragment {
                 String type = String.valueOf(parent.getItemAtPosition(position));
                 if (!type.equalsIgnoreCase(TYPE_VIEW_ALL)) {
                     getRankingWithCount(type);
+                } else {
+                    variantViewModel.getProductWithVariant(new ArrayList<>());
                 }
             }
 
@@ -132,32 +121,25 @@ public class HomeFragment extends Fragment {
 
             }
         });
-    }
 
-    private void subscribeUi(ProductViewModel viewModel) {
-        // Update the list when the data changes
-        viewModel.getProducts(0, null).observe(this, new Observer<List<Product>>() {
+        productAdapter.setmOnItemClickListener(new ProductAdapter.OnItemClickListener() {
             @Override
-            public void onChanged(@Nullable List<Product> products) {
-                if (products != null) {
-                    globalProducts.clear();
-                    globalProducts.addAll(products);
-                    productAdapter.notifyDataSetChanged();
-                } else {
-                    // TODO: 14-06-2019 Empty list handling
-                }
+            public void onItemClick(ProductVariantPOJO obj, int position) {
+                Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
+                intent.putExtra(ProductDetailActivity.EXTRA_ID, obj.getId());
+                intent.putExtra(ProductDetailActivity.EXTRA_NAME, obj.getName());
+                startActivity(intent);
             }
         });
     }
 
-    private void subscribeUiForIds() {
-        // Update the list when the data changes
-        viewModel.getProducts(0, longs).observe(this, new Observer<List<Product>>() {
+    private void subscribeForVariant() {
+        variantViewModel.getProductWithVariant(longs).observe(getActivity(), new Observer<List<ProductVariantPOJO>>() {
             @Override
-            public void onChanged(@Nullable List<Product> products) {
-                if (products != null) {
+            public void onChanged(@Nullable List<ProductVariantPOJO> productVariantPOJOS) {
+                if (productVariantPOJOS != null) {
                     globalProducts.clear();
-                    globalProducts.addAll(products);
+                    globalProducts.addAll(productVariantPOJOS);
                     productAdapter.notifyDataSetChanged();
                 } else {
                     // TODO: 14-06-2019 Empty list handling
@@ -176,8 +158,7 @@ public class HomeFragment extends Fragment {
                         longs.add(productRanking.getProduct_id());
                     }
                 }
-
-                viewModel.getProducts(0, longs);
+                variantViewModel.getProductWithVariant(longs);
             }
         });
     }
@@ -189,7 +170,6 @@ public class HomeFragment extends Fragment {
         for (ProductRanking productRanking : globalProductRankings) {
             strType.add(productRanking.getRanking());
         }
-
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                 getActivity(), android.R.layout.simple_spinner_dropdown_item, strType);
         return arrayAdapter;
@@ -224,8 +204,27 @@ public class HomeFragment extends Fragment {
             } else {
                 // TODO: 14-06-2019 Empty list handling
             }
-
-
         }
+    }
+
+    /**
+     * Server call for getting json using retrofit
+     * Assuming that data will change daily keeping this call on every load.
+     */
+    public void serverCallForGson() {
+        apiHelper.getJson(new APIHelper.ICallback() {
+            @Override
+            public void onSuccess(Response body) {
+                if (body != null) {
+                    DataProcessor dataProcessor = new DataProcessor(getActivity());
+                    dataProcessor.processData(body);
+                }
+            }
+
+            @Override
+            public void onFailure(ResponseBody responseBody) {
+
+            }
+        });
     }
 }

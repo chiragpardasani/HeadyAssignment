@@ -1,6 +1,7 @@
 package com.headyassignment.adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -57,9 +58,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                     inflate(layoutInflater, localCategory1, holder.dynamicLinear);
                 }
             }
+
+            holder.txtTitle.setTypeface(null, Typeface.BOLD);
+
         } else {
             holder.dynamicLinear.removeAllViews();
             holder.img.setImageDrawable(context.getResources().getDrawable(R.mipmap.ic_add));
+            holder.txtTitle.setTypeface(null, Typeface.NORMAL);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
