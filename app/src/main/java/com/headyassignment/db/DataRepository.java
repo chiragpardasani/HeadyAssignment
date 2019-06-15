@@ -5,6 +5,7 @@ import android.arch.lifecycle.MediatorLiveData;
 
 import com.headyassignment.db.entity.Category;
 import com.headyassignment.db.entity.Product;
+import com.headyassignment.db.entity.ProductRanking;
 
 import java.util.List;
 
@@ -31,11 +32,6 @@ public class DataRepository {
                 productEntities -> {
                     mObservableProducts.postValue(productEntities);
                 });
-
-        mObservableCategories.addSource(mDatabase.categoryDao().loadAllCategories(),
-                categories -> {
-                    mObservableCategories.postValue(categories);
-                });
     }
 
     public static DataRepository getInstance(final AppDatabase database) {
@@ -53,13 +49,22 @@ public class DataRepository {
      * Get the list of products from the database and get notified when the data changes.
      */
     public LiveData<List<Product>> getProducts() {
-        return mObservableProducts;
+        return mDatabase.productDao().loadAllProducts();
     }
 
-    /**
-     * Get the list of categories from the database and get notified when the data changes.
-     */
-    public LiveData<List<Category>> getCategories() {
-        return mObservableCategories;
+    public LiveData<List<Product>> getProductsByIds(List<Long> longs) {
+        return mDatabase.productDao().loadAllProductsByIds(longs);
+    }
+
+    public LiveData<List<Product>> getProductsByCategoryId(long id) {
+        return mDatabase.productDao().loadProductsByCategory(id);
+    }
+
+    public LiveData<List<Category>> getCategoryByParentId(long id) {
+        return mDatabase.categoryDao().loadCategoriesById(id);
+    }
+
+    public LiveData<List<ProductRanking>> getRankingWithCount(String ranking) {
+        return mDatabase.productRankingDao().loadAllProductRankingByRanking(ranking);
     }
 }

@@ -14,8 +14,8 @@ import java.util.List;
 @Dao
 public interface CategoryDao {
 
-    @Query("SELECT * FROM categories")
-    LiveData<List<Category>> loadAllCategories();
+    @Query("SELECT * FROM categories where parent_id = :id")
+    LiveData<List<Category>> loadCategoriesById(long id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Category> categories);

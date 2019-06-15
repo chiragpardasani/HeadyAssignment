@@ -11,14 +11,14 @@ import com.headyassignment.db.entity.Product;
 
 import java.util.List;
 
-public class ProductViewModel extends AndroidViewModel {
+public class ProductListViewModel extends AndroidViewModel {
 
     // MediatorLiveData can observe other LiveData objects and react on their emissions.
     private final MediatorLiveData<List<Product>> mObservableProducts;
 
     Application application;
 
-    public ProductViewModel(@NonNull Application application) {
+    public ProductListViewModel(@NonNull Application application) {
         super(application);
 
         this.application = application;
@@ -30,21 +30,9 @@ public class ProductViewModel extends AndroidViewModel {
     /**
      * Expose the LiveData Products query so the UI can observe it.
      */
-    public LiveData<List<Product>> getProducts(long id, List<Long> longs) {
-        LiveData<List<Product>> products;
-        if (id > 0) {
-            products = ((MyApplication) application).getRepository()
-                    .getProductsByCategoryId(id);
-        } else {
-            if (longs != null) {
-                products = ((MyApplication) application).getRepository()
-                        .getProductsByIds(longs);
-            } else {
-                products = ((MyApplication) application).getRepository()
-                        .getProducts();
-            }
-
-        }
+    public LiveData<List<Product>> getProducts(long id) {
+        LiveData<List<Product>> products = ((MyApplication) application).getRepository()
+                .getProductsByCategoryId(id);
 
         // observe the changes of the products from the database and forward them
         mObservableProducts.addSource(products, mObservableProducts::setValue);

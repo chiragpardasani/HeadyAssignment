@@ -6,6 +6,7 @@ import com.headyassignment.MyApplication;
 import com.headyassignment.db.AppDatabase;
 import com.headyassignment.db.entity.Category;
 import com.headyassignment.db.entity.Product;
+import com.headyassignment.db.entity.ProductRanking;
 import com.headyassignment.db.entity.Variant;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class DataProcessor {
     List<Category> categories;
     List<Product> products;
     List<Variant> variants;
+    List<ProductRanking> productRankings;
 
     AppDatabase appDatabase;
 
@@ -28,6 +30,7 @@ public class DataProcessor {
         categories = new ArrayList<>();
         products = new ArrayList<>();
         variants = new ArrayList<>();
+        productRankings = new ArrayList<>();
         appDatabase = ((MyApplication) context.getApplicationContext()).getDatabase();
     }
 
@@ -76,6 +79,28 @@ public class DataProcessor {
             }
         }
 
+        for (Response.ResponseRanking responseRankingProduct : response.getRankings()) {
+
+            for (Response.ResponseRankingProduct rankingProduct : responseRankingProduct.getProducts()) {
+                ProductRanking productRanking = new ProductRanking();
+                productRanking.setRanking(responseRankingProduct.getRanking());
+                productRanking.setProduct_id(rankingProduct.getId());
+                if (rankingProduct.getOrder_count() > 0) {
+                    productRanking.setCount(rankingProduct.getOrder_count());
+                }
+
+                if (rankingProduct.getView_count() > 0) {
+                    productRanking.setCount(rankingProduct.getView_count());
+                }
+
+                if (rankingProduct.getShares() > 0) {
+                    productRanking.setCount(rankingProduct.getShares());
+                }
+
+                productRankings.add(productRanking);
+            }
+        }
+
         saveModelsToDb();
     }
 
@@ -83,6 +108,8 @@ public class DataProcessor {
         appDatabase.insertProducts(appDatabase, ((MyApplication) context.getApplicationContext()).getmAppExecutors(), products);
         appDatabase.insertCategories(appDatabase, ((MyApplication) context.getApplicationContext()).getmAppExecutors(), categories);
         appDatabase.insertVariants(appDatabase, ((MyApplication) context.getApplicationContext()).getmAppExecutors(), variants);
+        appDatabase.deleteAll(appDatabase, ((MyApplication) context.getApplicationContext()).getmAppExecutors());
+        appDatabase.insertProductRanking(appDatabase, ((MyApplication) context.getApplicationContext()).getmAppExecutors(), productRankings);
     }
 
     public Category findCategoryFromId(long id) {

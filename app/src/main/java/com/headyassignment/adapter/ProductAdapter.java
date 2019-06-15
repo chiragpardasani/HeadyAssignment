@@ -42,7 +42,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int i) {
         Product product = products.get(i);
         Date date = AppUtils.parseStringDate(product.getDate_added(), AppUtils.TEMPLATE_STANDARD_DATE_AND_TIME_TIMEZONE_MILLI);
-        holder.txtDate.setText(AppUtils.getStandardDate(date, "dd MMM yyyy"));
+        holder.txtDate.setText("Created on :" + AppUtils.getStandardDate(date, "dd MMM yyyy"));
         holder.txtTitle.setText(product.getName());
     }
 

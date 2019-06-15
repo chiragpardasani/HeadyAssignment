@@ -15,14 +15,16 @@ import android.support.annotation.VisibleForTesting;
 import com.headyassignment.AppExecutors;
 import com.headyassignment.db.dao.CategoryDao;
 import com.headyassignment.db.dao.ProductDao;
+import com.headyassignment.db.dao.ProductRankingDao;
 import com.headyassignment.db.dao.VariantDao;
 import com.headyassignment.db.entity.Category;
 import com.headyassignment.db.entity.Product;
+import com.headyassignment.db.entity.ProductRanking;
 import com.headyassignment.db.entity.Variant;
 
 import java.util.List;
 
-@Database(entities = {Product.class, Category.class, Variant.class}, version = 1)
+@Database(entities = {Product.class, Category.class, Variant.class, ProductRanking.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase sInstance;
@@ -32,6 +34,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CategoryDao categoryDao();
 
     public abstract VariantDao variantDao();
+
+    public abstract ProductRankingDao productRankingDao();
 
     @VisibleForTesting
     public static final String DATABASE_NAME = "heady-assignment-db";
@@ -85,6 +89,20 @@ public abstract class AppDatabase extends RoomDatabase {
             database.runInTransaction(() -> {
                 database.variantDao().insertAll(variants);
             });
+        });
+    }
+
+    public void insertProductRanking(final AppDatabase database, AppExecutors appExecutors, final List<ProductRanking> productRankings) {
+        appExecutors.diskIO().execute(() -> {
+            database.runInTransaction(() -> {
+                database.productRankingDao().insertAll(productRankings);
+            });
+        });
+    }
+
+    public void deleteAll(final AppDatabase database, AppExecutors appExecutors) {
+        appExecutors.diskIO().execute(() -> {
+            database.productRankingDao().deleteModel();
         });
     }
 }
