@@ -1,0 +1,50 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="nav_header_height">184dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="button_small_height">36dp</dimen>
+    <dimen name="button_very_small_height">28dp</dimen>
+    <dimen name="image_view_height">40dp</dimen>
+    <dimen name="card_height">64dp</dimen>
+    <dimen name="cornerRadiusSmall">6dp</dimen>
+    <dimen name="cornerRadiusLarge">8dp</dimen>
+    <dimen name="gradeCardHeight">90dp</dimen>
+
+    <dimen name="elevationSmall">3dp</dimen>
+    <dimen name="elevationLarge">6dp</dimen>
+
+    <!--Default text sizes-->
+    <dimen name="textSizeSmall">12sp</dimen>
+    <dimen name="textSizeRegular">14sp</dimen>
+    <dimen name="textSizeMedium">16sp</dimen>
+    <dimen name="textSizeLarge">18sp</dimen>
+    <dimen name="textSizeExtraLarge">22sp</dimen>
+    <dimen name="textSizeExtraXLarge">24sp</dimen>
+
+    <!--Default padding-->
+    <dimen name="paddingSmall">6dp</dimen>
+    <dimen name="paddingRegular">8dp</dimen>
+    <dimen name="paddingMedium">12dp</dimen>
+    <dimen name="paddingLarge">16dp</dimen>
+    <dimen name="paddingExtraLarge">20dp</dimen>
+
+    <!--Default margin-->
+    <dimen name="marginExtraSmall">4dp</dimen>
+    <dimen name="marginSmall">6dp</dimen>
+    <dimen name="marginRegular">8dp</dimen>
+    <dimen name="marginMedium">12dp</dimen>
+    <dimen name="marginLarge">16dp</dimen>
+    <dimen name="marginExtraLarge">20dp</dimen>
+    <dimen name="marginXLarge">24dp</dimen>
+
+    <dimen name="iconSizeSmall">18dp</dimen>
+    <dimen name="iconSizeRegular">24dp</dimen>
+    <dimen name="iconSizeExtraLarge">36dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+
+</resources>

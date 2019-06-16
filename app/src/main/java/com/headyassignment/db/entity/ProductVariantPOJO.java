@@ -1,5 +1,7 @@
 package com.headyassignment.db.entity;
 
+import android.arch.persistence.room.Ignore;
+
 public class ProductVariantPOJO {
 
     long id;
@@ -10,6 +12,8 @@ public class ProductVariantPOJO {
     String name;
     long category_id;
     String date_added;
+    @Ignore
+    long count;
 
     public long getId() {
         return id;
@@ -73,5 +77,13 @@ public class ProductVariantPOJO {
 
     public void setCategory_id(long category_id) {
         this.category_id = category_id;
+    }
+
+    public long getCount() {
+        return count;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
     }
 }

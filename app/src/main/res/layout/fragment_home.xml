@@ -13,13 +13,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_margin="8dp" />
+        android:layout_margin="@dimen/marginRegular" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fragHome_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:padding="8dp" />
+        android:padding="@dimen/paddingRegular" />
 
 </LinearLayout>

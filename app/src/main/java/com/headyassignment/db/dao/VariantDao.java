@@ -20,7 +20,7 @@ public interface VariantDao {
     @Query("SELECT * FROM variants left join products on product_id = products.id group by product_id")
     LiveData<List<ProductVariantPOJO>> loadAllVariantsWithProduct();
 
-    @Query("SELECT * FROM variants left join products on product_id = products.id where product_id IN (:longs) group by product_id")
+    @Query("SELECT * FROM variants left join products on product_id = products.id where product_id IN (:longs) group by product_id order by id")
     LiveData<List<ProductVariantPOJO>> loadAllVariantsWithProduct(List<Long> longs);
 
     @Query("SELECT * FROM variants left join products on product_id = products.id where category_id = :id group by product_id")

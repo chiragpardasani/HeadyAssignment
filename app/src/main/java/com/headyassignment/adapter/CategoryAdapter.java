@@ -60,7 +60,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             }
 
             holder.txtTitle.setTypeface(null, Typeface.BOLD);
-
         } else {
             holder.dynamicLinear.removeAllViews();
             holder.img.setImageDrawable(context.getResources().getDrawable(R.mipmap.ic_add));

@@ -93,6 +93,11 @@ public class ProductListFragment extends Fragment {
         });
     }
 
+    /**
+     * Subscribing to variant view model to products by category
+     *
+     * @param viewModel
+     */
     private void subscribeUi(VariantViewModel viewModel) {
         // Update the list when the data changes
         viewModel.getProductByCategoryId(id).observe(this, new Observer<List<ProductVariantPOJO>>() {

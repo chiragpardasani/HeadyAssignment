@@ -7,74 +7,74 @@
     android:orientation="vertical"
     tools:context=".activities.ProductDetailActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <include layout="@layout/toolbar" />
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:elevation="0dp">
+        android:layout_margin="@dimen/marginRegular"
+        app:cardCornerRadius="@dimen/cornerRadiusLarge">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/paddingRegular">
 
-    </android.support.design.widget.AppBarLayout>
+            <TextView
+                android:id="@+id/actProdDetail_txtTitle"
+                style="@style/textViewProductTitleStyle"
+                tools:text="Product Name" />
 
-    <TextView
-        android:id="@+id/actProdDetail_txtTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:textColor="@color/textColorPrimary"
-        android:textSize="22sp"
-        tools:text="Product Name" />
+            <TextView
+                android:id="@+id/actProdDetail_txtPrice"
+                style="@style/textViewProductTitleStyle"
+                tools:text="Price" />
 
-    <TextView
-        android:id="@+id/actProdDetail_txtPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:textSize="18sp"
-        tools:text="Price" />
+            <TextView
+                android:id="@+id/actProdDetail_txtTax"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/marginRegular"
+                android:layout_marginRight="@dimen/marginRegular"
+                android:layout_marginBottom="@dimen/marginRegular"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="@dimen/textSizeRegular"
+                tools:text="Tax" />
 
-    <TextView
-        android:id="@+id/actProdDetail_txtTax"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:textColor="@color/textColorSecondary"
-        android:textSize="14sp"
-        tools:text="Tax" />
+            <TextView
+                style="@style/textViewSecondaryStyle"
+                android:text="@string/available_in" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:text="Available in: "
-        android:textColor="@color/textColorSecondary"
-        android:textSize="14sp" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/actProdDetail_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/marginRegular"
+                android:padding="@dimen/paddingRegular" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/actProdDetail_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp" />
+            <TextView
+                android:id="@+id/actProdDetail_txtNoOfOrders"
+                style="@style/textViewSecondaryStyle"
+                tools:text="No Of Orders" />
 
-    <TextView
-        android:id="@+id/actProdDetail_txtCreatedOn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
-        android:textSize="12sp"
-        tools:text="Created On: " />
+            <TextView
+                android:id="@+id/actProdDetail_txtNoOfShares"
+                style="@style/textViewSecondaryStyle"
+                tools:text="No Of Shares" />
 
+            <TextView
+                android:id="@+id/actProdDetail_txtNoOfViews"
+                style="@style/textViewSecondaryStyle"
+                tools:text="No Of Views" />
+
+            <TextView
+                android:id="@+id/actProdDetail_txtCreatedOn"
+                style="@style/textViewSecondaryStyle"
+                tools:text="Created On: " />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>

@@ -44,7 +44,7 @@ public class VariantViewModel extends AndroidViewModel {
     }
 
     /**
-     * Expose the LiveData Vriants query so the UI can observe it.
+     * Expose the LiveData Variants query so the UI can observe it.
      */
     public LiveData<List<ProductVariantPOJO>> getProductWithVariant(List<Long> longs) {
         LiveData<List<ProductVariantPOJO>> products;
@@ -61,7 +61,7 @@ public class VariantViewModel extends AndroidViewModel {
     }
 
     /**
-     * Expose the LiveData Vriants query so the UI can observe it.
+     * Expose the LiveData Variants query so the UI can observe it.
      */
     public LiveData<List<ProductVariantPOJO>> getProductByCategoryId(long id) {
         LiveData<List<ProductVariantPOJO>> products;

@@ -37,4 +37,15 @@ public class RankingViewModel extends AndroidViewModel {
         mObservableRanking.addSource(products, mObservableRanking::setValue);
         return mObservableRanking;
     }
+
+    /**
+     * Expose the LiveData ProductRankings query so the UI can observe it.
+     */
+    public LiveData<List<ProductRanking>> getRankingByProduct(long product_id) {
+        LiveData<List<ProductRanking>> products = ((MyApplication) application).getRepository()
+                .getRankingByProduct(product_id);
+        // observe the changes of the products from the database and forward them
+        mObservableRanking.addSource(products, mObservableRanking::setValue);
+        return mObservableRanking;
+    }
 }

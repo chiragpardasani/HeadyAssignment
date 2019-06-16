@@ -31,6 +31,8 @@ import com.headyassignment.viewmodel.RankingViewModel;
 import com.headyassignment.viewmodel.VariantViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -41,8 +43,6 @@ import okhttp3.ResponseBody;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment {
-
-    public static final String TYPE_VIEW_ALL = "All Prodcuts";
 
     @BindView(R.id.fragHome_recyclerView)
     RecyclerView recyclerView;
@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment {
         recyclerView.setAdapter(productAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        spinner.setAdapter(createTypeAdapter());
+        // view model initialize
         viewModelRanking =
                 ViewModelProviders.of(this).get(RankingViewModel.class);
 
@@ -109,11 +109,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String type = String.valueOf(parent.getItemAtPosition(position));
-                if (!type.equalsIgnoreCase(TYPE_VIEW_ALL)) {
-                    getRankingWithCount(type);
-                } else {
-                    variantViewModel.getProductWithVariant(new ArrayList<>());
-                }
+                getRankingWithCount(type);
             }
 
             @Override
@@ -133,13 +129,27 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    /**
+     * Subscribe to variant view model for observing products for specific ids
+     */
     private void subscribeForVariant() {
         variantViewModel.getProductWithVariant(longs).observe(getActivity(), new Observer<List<ProductVariantPOJO>>() {
             @Override
             public void onChanged(@Nullable List<ProductVariantPOJO> productVariantPOJOS) {
                 if (productVariantPOJOS != null) {
                     globalProducts.clear();
-                    globalProducts.addAll(productVariantPOJOS);
+                    for (ProductVariantPOJO productVariantPOJO : productVariantPOJOS) {
+                        productVariantPOJO.setCount(getCountTextIfExists(productVariantPOJO.getProduct_id()));
+                        globalProducts.add(productVariantPOJO);
+                    }
+
+                    Collections.sort(globalProducts, new Comparator<ProductVariantPOJO>() {
+                        @Override
+                        public int compare(ProductVariantPOJO o1, ProductVariantPOJO o2) {
+                            return Integer.valueOf((int) o2.getCount()).compareTo((int) o1.getCount());
+                        }
+                    });
+
                     productAdapter.notifyDataSetChanged();
                 } else {
                     // TODO: 14-06-2019 Empty list handling
@@ -148,12 +158,19 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    /**
+     * Subscribe to ranking view model
+     *
+     * @param ranking
+     */
     private void getRankingWithCount(String ranking) {
         viewModelRanking.getRankingWithCount(ranking).observe(this, new Observer<List<ProductRanking>>() {
             @Override
             public void onChanged(@Nullable List<ProductRanking> productRankings) {
                 if (productRankings != null) {
                     longs.clear();
+                    globalProductRankings.clear();
+                    globalProductRankings.addAll(productRankings);
                     for (ProductRanking productRanking : productRankings) {
                         longs.add(productRanking.getProduct_id());
                     }
@@ -163,11 +180,16 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private ArrayAdapter<String> createTypeAdapter() {
+    /**
+     * Attaching adapter to spinner
+     *
+     * @param productRankings
+     * @return
+     */
+    private ArrayAdapter<String> createTypeAdapter(List<ProductRanking> productRankings) {
         List<String> strType = new ArrayList<>();
-        strType.add(TYPE_VIEW_ALL);
 
-        for (ProductRanking productRanking : globalProductRankings) {
+        for (ProductRanking productRanking : productRankings) {
             strType.add(productRanking.getRanking());
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
@@ -197,10 +219,7 @@ public class HomeFragment extends Fragment {
         protected void onPostExecute(List<ProductRanking> productRankings) {
             super.onPostExecute(productRankings);
             if (productRankings != null) {
-                globalProductRankings.clear();
-                globalProductRankings.addAll(productRankings);
-
-                spinner.setAdapter(createTypeAdapter());
+                spinner.setAdapter(createTypeAdapter(productRankings));
             } else {
                 // TODO: 14-06-2019 Empty list handling
             }
@@ -226,5 +245,21 @@ public class HomeFragment extends Fragment {
 
             }
         });
+    }
+
+    /**
+     * adding count to product
+     *
+     * @param product_id
+     * @return
+     */
+    public long getCountTextIfExists(long product_id) {
+        for (ProductRanking productRanking : globalProductRankings) {
+            if (productRanking.getProduct_id() == product_id) {
+                return productRanking.getCount();
+            }
+        }
+
+        return 0;
     }
 }

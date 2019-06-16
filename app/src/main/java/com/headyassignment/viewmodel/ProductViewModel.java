@@ -25,6 +25,12 @@ public class ProductViewModel extends AndroidViewModel {
         mObservableProduct.setValue(null);
     }
 
+    /**
+     * Get single product by id
+     *
+     * @param id
+     * @return
+     */
     public LiveData<Product> getSingleProduct(long id) {
         LiveData<Product> product = ((MyApplication) application).getRepository()
                 .getSingleProduct(id);

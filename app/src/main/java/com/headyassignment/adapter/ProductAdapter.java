@@ -46,6 +46,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.txtTitle.setText(product.getName());
         holder.txtPrice.setText("Rs : " + product.getPrice());
         holder.txtAvailableIn.setText("Size: " + product.getSize() + ", Color: " + product.getColor());
+
+        if (product.getCount() > 0) {
+            holder.txtCount.setVisibility(View.VISIBLE);
+            holder.txtCount.setText("Ranking : " + product.getCount());
+        } else {
+            holder.txtCount.setVisibility(View.GONE);
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +73,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         TextView txtTitle;
         TextView txtPrice;
         TextView txtAvailableIn;
+        TextView txtCount;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -73,6 +82,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             txtTitle = itemView.findViewById(R.id.itemProduct_txtTitle);
             txtPrice = itemView.findViewById(R.id.itemProduct_txtPrice);
             txtAvailableIn = itemView.findViewById(R.id.itemProduct_txtAvailableIn);
+            txtCount = itemView.findViewById(R.id.itemProduct_txtCountText);
         }
     }
 

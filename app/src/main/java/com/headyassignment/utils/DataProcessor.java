@@ -55,7 +55,6 @@ public class DataProcessor {
                     product.setTax(responseProduct.getTax());
                     products.add(product);
 
-
                     if (responseProduct.getVariants() != null) {
                         for (Response.ResponseVariant responseVariant : responseProduct.getVariants()) {
                             Variant variant = new Variant();
@@ -104,6 +103,9 @@ public class DataProcessor {
         saveModelsToDb();
     }
 
+    /**
+     * Save list to database
+     */
     private void saveModelsToDb() {
         appDatabase.insertProducts(appDatabase, ((MyApplication) context.getApplicationContext()).getmAppExecutors(), products);
         appDatabase.insertCategories(appDatabase, ((MyApplication) context.getApplicationContext()).getmAppExecutors(), categories);
@@ -112,19 +114,16 @@ public class DataProcessor {
         appDatabase.insertProductRanking(appDatabase, ((MyApplication) context.getApplicationContext()).getmAppExecutors(), productRankings);
     }
 
-    public Category findCategoryFromId(long id) {
+    /**
+     * Find category from id
+     *
+     * @param id
+     * @return
+     */
+    private Category findCategoryFromId(long id) {
         for (Category category : categories) {
             if (category.getId() == id) {
                 return category;
-            }
-        }
-        return null;
-    }
-
-    public Product findProductFromId(long id) {
-        for (Product product : products) {
-            if (product.getId() == id) {
-                return product;
             }
         }
         return null;

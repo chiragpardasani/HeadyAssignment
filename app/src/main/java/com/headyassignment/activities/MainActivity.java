@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        // Action bar and navigation related
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -57,12 +58,19 @@ public class MainActivity extends AppCompatActivity
         globalCategories = new ArrayList<>();
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Adding fragment for first time
         replaceFragment(HomeFragment.newInstance(), false);
         final CategoryViewModel viewModel =
                 ViewModelProviders.of(this).get(CategoryViewModel.class);
         subscribeUi(viewModel);
     }
 
+    /**
+     * Subscribe to category view model for getting parent categories
+     * Passing zero to get parent categories
+     *
+     * @param viewModel
+     */
     private void subscribeUi(CategoryViewModel viewModel) {
         // Update the list when the data changes
         viewModel.getCategories(0).observe(this, new Observer<List<Category>>() {
@@ -93,6 +101,9 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Adding menu items dynamically
+     */
     private void addMenuItemInNavMenuDrawer() {
         Menu menu = navigationView.getMenu();
         menu.clear();
@@ -123,6 +134,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Set title of toolbar from different fragments
+     *
+     * @param title
+     */
     public void setTitle(String title) {
         toolbar.setTitle(title);
     }

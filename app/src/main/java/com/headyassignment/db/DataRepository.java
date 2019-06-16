@@ -65,6 +65,10 @@ public class DataRepository {
         return mDatabase.productRankingDao().loadAllProductRankingByRanking(ranking);
     }
 
+    public LiveData<List<ProductRanking>> getRankingByProduct(long product_id) {
+        return mDatabase.productRankingDao().loadAllProductRankingByProduct(product_id);
+    }
+
     public LiveData<List<Variant>> getVariantByProduct(long id) {
         return mDatabase.variantDao().loadAllVariantsByProduct(id);
     }

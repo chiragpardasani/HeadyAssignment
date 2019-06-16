@@ -19,6 +19,9 @@ public interface ProductRankingDao {
     @Query("SELECT * FROM product_rankings where ranking = :ranking order by count DESC")
     LiveData<List<ProductRanking>> loadAllProductRankingByRanking(String ranking);
 
+    @Query("SELECT * FROM product_rankings where product_id = :product_id")
+    LiveData<List<ProductRanking>> loadAllProductRankingByProduct(long product_id);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<ProductRanking> productRankings);
 

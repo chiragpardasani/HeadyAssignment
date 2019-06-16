@@ -74,7 +74,7 @@ public class CategoryListFragment extends Fragment {
                 switch (type) {
                     case CategoryAdapter.TYPE_EXPAND:
                         selectedParent_id = localCategory.getId();
-                        viewModel.setID(selectedParent_id);
+                        viewModel.getCategories(selectedParent_id);
                         break;
                     case CategoryAdapter.TYPE_COLLAPSE:
                         localCategory.setOpened(false);
@@ -91,6 +91,11 @@ public class CategoryListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
+    /**
+     * Subscribe to category view model
+     *
+     * @param viewModel
+     */
     private void subscribeUi(CategoryViewModel viewModel) {
         // Update the list when the data changes
         viewModel.getCategories(id).observe(this, new Observer<List<Category>>() {
@@ -139,7 +144,7 @@ public class CategoryListFragment extends Fragment {
         super.onResume();
         ((MainActivity) getActivity()).setTitle("Categories");
         viewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
-        viewModel.setID(id);
+        viewModel.getCategories(id);
         subscribeUi(viewModel);
     }
 

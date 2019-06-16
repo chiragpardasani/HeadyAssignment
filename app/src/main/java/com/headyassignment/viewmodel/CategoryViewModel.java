@@ -38,12 +38,4 @@ public class CategoryViewModel extends AndroidViewModel {
 
         return mObservableCategories;
     }
-
-    public void setID(long id) {
-        LiveData<List<Category>> categories = ((MyApplication) application).getRepository()
-                .getCategoryByParentId(id);
-
-        // observe the changes of the products from the database and forward them
-        mObservableCategories.addSource(categories, mObservableCategories::setValue);
-    }
 }

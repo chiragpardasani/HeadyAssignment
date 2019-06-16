@@ -14,8 +14,10 @@ import android.widget.TextView;
 import com.headyassignment.R;
 import com.headyassignment.adapter.VariantAdapter;
 import com.headyassignment.db.entity.Product;
+import com.headyassignment.db.entity.ProductRanking;
 import com.headyassignment.utils.AppUtils;
 import com.headyassignment.viewmodel.ProductViewModel;
+import com.headyassignment.viewmodel.RankingViewModel;
 import com.headyassignment.viewmodel.VariantViewModel;
 
 import java.util.ArrayList;
@@ -48,6 +50,15 @@ public class ProductDetailActivity extends AppCompatActivity {
     @BindView(R.id.actProdDetail_recyclerView)
     RecyclerView recyclerView;
 
+    @BindView(R.id.actProdDetail_txtNoOfOrders)
+    TextView txtNoOfOrders;
+
+    @BindView(R.id.actProdDetail_txtNoOfShares)
+    TextView txtNoOfShares;
+
+    @BindView(R.id.actProdDetail_txtNoOfViews)
+    TextView txtNoOfViews;
+
     List<Variant> globalVariants;
 
     VariantAdapter variantAdapter;
@@ -55,21 +66,27 @@ public class ProductDetailActivity extends AppCompatActivity {
     long id;
     String name;
 
+    // default values set to zero
+    long orders = 0;
+    long shares = 0;
+    long views = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
         ButterKnife.bind(this);
 
+        // toolbar related
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Product Detail");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // getting data through intent
         id = getIntent().getLongExtra(EXTRA_ID, 0);
         name = getIntent().getStringExtra(EXTRA_NAME);
 
         globalVariants = new ArrayList<>();
-
         variantAdapter = new VariantAdapter(this, globalVariants);
 
         recyclerView.setAdapter(variantAdapter);
@@ -93,6 +110,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
+        // Initializing view models
         final VariantViewModel viewModel =
                 ViewModelProviders.of(this).get(VariantViewModel.class);
         subscribe(viewModel);
@@ -100,8 +118,17 @@ public class ProductDetailActivity extends AppCompatActivity {
         final ProductViewModel productViewModel =
                 ViewModelProviders.of(this).get(ProductViewModel.class);
         subscribe(productViewModel);
+
+        final RankingViewModel rankingViewModel =
+                ViewModelProviders.of(this).get(RankingViewModel.class);
+        subscribe(rankingViewModel);
     }
 
+    /**
+     * Subscribing to variant view model for getting different variant for given product
+     *
+     * @param viewModel
+     */
     private void subscribe(VariantViewModel viewModel) {
         viewModel.getRankingWithCount(id).observe(this, new Observer<List<com.headyassignment.db.entity.Variant>>() {
             @Override
@@ -132,6 +159,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Subscribing to product view model to get detail of the product
+     *
+     * @param productViewModel
+     */
     public void subscribe(ProductViewModel productViewModel) {
         productViewModel.getSingleProduct(id).observe(this, new Observer<Product>() {
             @Override
@@ -141,6 +173,39 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                     Date date = AppUtils.parseStringDate(product.getDate_added(), AppUtils.TEMPLATE_STANDARD_DATE_AND_TIME_TIMEZONE_MILLI);
                     txtCreatedOn.setText("Created on : " + AppUtils.getStandardDate(date, "dd MMM yyyy"));
+                }
+            }
+        });
+    }
+
+    /**
+     * Ranking view model for getting different types of ranking for given product
+     * Assuming that the data will be coming in the same fashion
+     *
+     * @param rankingViewModel
+     */
+    public void subscribe(RankingViewModel rankingViewModel) {
+        rankingViewModel.getRankingByProduct(id).observe(this, new Observer<List<ProductRanking>>() {
+            @Override
+            public void onChanged(@Nullable List<ProductRanking> productRankings) {
+                if (productRankings != null) {
+                    for (ProductRanking productRanking : productRankings) {
+                        if (productRanking.getRanking().contains("OrdeRed")) {
+                            orders = productRanking.getCount();
+                        }
+
+                        if (productRanking.getRanking().contains("ShaRed")) {
+                            shares = productRanking.getCount();
+                        }
+
+                        if (productRanking.getRanking().contains("Viewed")) {
+                            views = productRanking.getCount();
+                        }
+                    }
+
+                    txtNoOfOrders.setText("Orders : " + orders);
+                    txtNoOfShares.setText("Shares : " + shares);
+                    txtNoOfViews.setText("Views : " + views);
                 }
             }
         });

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp">
+    android:layout_margin="@dimen/marginRegular"
+    app:cardCornerRadius="@dimen/cornerRadiusLarge">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,24 +15,29 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_margin="@dimen/marginRegular"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/itemCategory_txtName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/itemCategory_img"
+                android:layout_toLeftOf="@+id/itemCategory_img"
                 android:textColor="@color/textColorPrimary"
-                android:textSize="16sp"
+                android:textSize="@dimen/textSizeMedium"
                 tools:text="Category" />
 
             <ImageView
                 android:id="@+id/itemCategory_img"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/image_view_height"
+                android:layout_height="@dimen/image_view_height"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:contentDescription="@null"
                 android:src="@mipmap/ic_add" />
 
         </RelativeLayout>
@@ -46,9 +51,9 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="@dimen/marginRegular"
+                android:layout_marginRight="@dimen/marginRegular"
+                android:layout_marginBottom="@dimen/marginRegular"
                 android:background="@color/viewBgLine" />
 
         </LinearLayout>
